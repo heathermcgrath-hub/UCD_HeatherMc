@@ -60,7 +60,25 @@ print(UNEMPC19_DROPDUPES_FILTERED.info())
 UNEMPC19_SORTED = UNEMPC19_DROPDUPES_FILTERED.sort_values("Month", ascending=True)
 UNEMPC19_SORTED_IND = UNEMPC19_SORTED.set_index("Month")
 
+#merge UNEMP and UNEMPC19 data
+print(UNEMP_SORTED_IND.shape)
+UNEMP_MERGE = UNEMP_SORTED_IND.merge(UNEMPC19_SORTED_IND, on="Month", how="outer")
+print(UNEMP_MERGE.shape)
+print(UNEMP_MERGE.columns)
 
+#merge UNEMP and RPPI data
+
+UNEMP_RPPI_MERGE = UNEMP_MERGE.merge(RPPI_SORTED_IND, on="Month", how="outer")
+print(UNEMP_RPPI_MERGE.shape)
+print(UNEMP_RPPI_MERGE.columns)
+
+#removing unwanted dates and columns
+UNEMP_RPPI_MERGE_CLEAN = UNEMP_RPPI_MERGE.loc["2015":"2022"]
+print(UNEMP_RPPI_MERGE_CLEAN.shape)
+UNEMP_RPPI_MERGE_CLEAN2 = UNEMP_RPPI_MERGE_CLEAN.drop(columns = ['Age Group_x','Sex_x','UNIT_x','Statistic_y', 'Age Group_y', 'Sex_y','UNIT_y','UNIT'])
+print(UNEMP_RPPI_MERGE_CLEAN2.shape)
+print(UNEMP_RPPI_MERGE_CLEAN2.columns)
+print(UNEMP_RPPI_MERGE_CLEAN2.head())
 
 
 
