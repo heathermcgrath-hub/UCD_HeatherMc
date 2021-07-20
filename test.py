@@ -90,6 +90,10 @@ for index, row in UNEMP_RPPI_MERGE_CLEAN2.iterrows():
         UNEMP_RPPI_MERGE_CLEAN2.loc[index, 'UNEMP Rate to use'] = row['VALUE_x']
 print(UNEMP_RPPI_MERGE_CLEAN2.head(78))
 
+#create a dictionary to input P&L sensitivity data
+sensitivities = {"1% RPPI impact" : 5.8, "1% UNEMP impact": 1.5}
+print(sensitivities["1% RPPI impact"])
+print(sensitivities["1% UNEMP impact"])
 
 
 
