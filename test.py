@@ -79,6 +79,18 @@ UNEMP_RPPI_MERGE_CLEAN2 = UNEMP_RPPI_MERGE_CLEAN.drop(columns = ['Age Group_x','
 print(UNEMP_RPPI_MERGE_CLEAN2.shape)
 print(UNEMP_RPPI_MERGE_CLEAN2.columns)
 print(UNEMP_RPPI_MERGE_CLEAN2.head())
+print(UNEMP_RPPI_MERGE_CLEAN2.tail())
+
+#create a new column for unemployment using C19 rate for post March 20 period
+
+for index, row in UNEMP_RPPI_MERGE_CLEAN2.iterrows():
+    if UNEMP_RPPI_MERGE_CLEAN2.loc[index,'VALUE_y'] > 0:
+        UNEMP_RPPI_MERGE_CLEAN2.loc[index,'UNEMP Rate to use'] = row['VALUE_y']
+    else:
+        UNEMP_RPPI_MERGE_CLEAN2.loc[index, 'UNEMP Rate to use'] = row['VALUE_x']
+print(UNEMP_RPPI_MERGE_CLEAN2.head(78))
+
+
 
 
 
