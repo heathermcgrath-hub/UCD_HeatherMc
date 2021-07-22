@@ -91,13 +91,39 @@ for index, row in UNEMP_RPPI_MERGE_CLEAN2.iterrows():
 print(UNEMP_RPPI_MERGE_CLEAN2.head(78))
 
 #create a dictionary to input P&L sensitivity data
-sensitivities = {"1% RPPI impact" : 5.8, "1% UNEMP impact": 1.5}
-print(sensitivities["1% RPPI impact"])
-print(sensitivities["1% UNEMP impact"])
+sensitivity_RPPI = {"1% RPPI impact" : 5.8}
+sensitivity_UMEMP = {"1% UNEMP impact": 1.5}
+print(sensitivity_RPPI["1% RPPI impact"])
+print(sensitivity_UMEMP["1% UNEMP impact"])
 
+#create dataframes from dictionaries
+sensitivityRPPIdf = pd.DataFrame.from_dict(sensitivity_RPPI,orient='index',columns=['RPPI'])
+sensitivityUMEMPdf = pd.DataFrame.from_dict(sensitivity_UMEMP,orient='index',columns=['UNEMP'])
+print(sensitivityRPPIdf)
+print(sensitivityUMEMPdf)
 
+#calculate monthly move on Unemployment rate
+UNEMP_RPPI_MERGE_CLEAN2['UNEMP_MVMT']=UNEMP_RPPI_MERGE_CLEAN2['UNEMP Rate to use'].diff()
+print(UNEMP_RPPI_MERGE_CLEAN2.tail())
 
+#create a function to multiply main dataframe by sensitivities
+RPPI_1 = 5.8
+UMEMP_1 = 1.5
+print(RPPI_1)
+print(UMEMP_1)
 
+UNEMP_RPPI_MERGE_CLEAN2['RPPI_1'] = RPPI_1
+UNEMP_RPPI_MERGE_CLEAN2['UMEMP_1'] = UMEMP_1
 
+print(UNEMP_RPPI_MERGE_CLEAN2.head())
+print(UNEMP_RPPI_MERGE_CLEAN2.columns)
 
+#Calculate P&L impact of RPPI and UNEMP movements monthly
+
+UNEMP_RPPI_MERGE_CLEAN2['RPPI_PL'] = (UNEMP_RPPI_MERGE_CLEAN2['RPPI_1'] * UNEMP_RPPI_MERGE_CLEAN2['VALUE'])/100
+UNEMP_RPPI_MERGE_CLEAN2['UNEMP_PL'] = (UNEMP_RPPI_MERGE_CLEAN2['UMEMP_1'] * UNEMP_RPPI_MERGE_CLEAN2['UNEMP_MVMT'])/100
+UNEMP_RPPI_MERGE_CLEAN2['TOTAL_PL'] = UNEMP_RPPI_MERGE_CLEAN2['UNEMP_PL'] + UNEMP_RPPI_MERGE_CLEAN2['RPPI_PL']
+
+print(UNEMP_RPPI_MERGE_CLEAN2.tail())
+print(UNEMP_RPPI_MERGE_CLEAN2.columns)
 
