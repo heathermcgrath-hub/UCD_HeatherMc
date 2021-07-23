@@ -2,37 +2,45 @@
 import pandas as pd
 import numpy as np
 RPPI=pd.read_csv("Residential Property Price Index.csv")
+RPPI2=pd.read_csv("RPPI2.csv")
 UNEMP=pd.read_csv("Seasonally Adjusted Monthly Unemployment.csv")
 UNEMPC19=pd.read_csv("Covid-19 Adjusted Monthly Unemployment Estimates.csv")
 
 print(RPPI.info())
+print(RPPI2.info())
 print(UNEMP.info())
 print(UNEMPC19.info())
 
 print(RPPI.shape)
+print(RPPI2.shape)
 print(UNEMP.shape)
 print(UNEMPC19.shape)
 
 print(RPPI.head())
+print(RPPI2.head())
 print(UNEMP.head())
 print(UNEMPC19.head())
 
 #bfill and ffill data
 
 NEW_RPPI_FILLED=RPPI.fillna(method="bfill").fillna(method="ffill")
+NEW_RPPI2_FILLED=RPPI.fillna(method="bfill").fillna(method="ffill")
 NEW_UNEMP_FILLED=UNEMP.fillna(method="bfill").fillna(method="ffill")
 NEW_UNEMPC19_FILLED=UNEMPC19.fillna(method="bfill").fillna(method="ffill")
 
 print(NEW_RPPI_FILLED.info())
+print(NEW_RPPI2_FILLED.info())
 print(NEW_UNEMP_FILLED.info())
 print(NEW_UNEMPC19_FILLED.info())
 
 #drop duplictes
 RPPI_DROPDUPES=NEW_RPPI_FILLED.drop_duplicates()
+RPPI2_DROPDUPES=NEW_RPPI2_FILLED.drop_duplicates()
 UNEMP_DROPDUPES=NEW_UNEMP_FILLED.drop_duplicates()
 UNEMPC19_DROPDUPES=NEW_UNEMPC19_FILLED.drop_duplicates()
 
 print(RPPI_DROPDUPES.info())
+print(RPPI2_DROPDUPES.info())
 print(UNEMP_DROPDUPES.info())
 print(UNEMPC19_DROPDUPES.info())
 
@@ -43,6 +51,17 @@ RPPI_DROPDUPES_FILTERED= RPPI_DROPDUPES[ (RPPI_DROPDUPES["Statistic"] == "Percen
 print(RPPI_DROPDUPES_FILTERED.info())
 RPPI_SORTED=RPPI_DROPDUPES_FILTERED.sort_values("Month",ascending=True)
 RPPI_SORTED_IND=RPPI_SORTED.set_index("Month")
+
+#subsetting sorting and indexing RPPI2 data
+print(RPPI2_DROPDUPES.head())
+print(RPPI2_DROPDUPES.columns)
+RPPI2_DROPDUPES_FILTERED= RPPI2_DROPDUPES[ (RPPI2_DROPDUPES["Statistic"] == "Residential Property Price Index") & (RPPI2_DROPDUPES["Type of Residential Property"] == "National - all residential properties")]
+print(RPPI2_DROPDUPES_FILTERED.info())
+RPPI2_SORTED=RPPI2_DROPDUPES_FILTERED.sort_values("Month",ascending=True)
+RPPI2_SORTED_IND=RPPI2_SORTED.set_index("Month")
+RPPI2_SORTED_IND.columns = ['Statistic2','Type of Residential Property2', 'UNIT2', 'VALUE2']
+print(RPPI2_SORTED_IND.columns)
+print(RPPI2_SORTED_IND.head())
 
 #subsetting sorting and indexing UNEMP data
 print(UNEMP_DROPDUPES.head())
@@ -68,14 +87,16 @@ print(UNEMP_MERGE.columns)
 
 #merge UNEMP and RPPI data
 
-UNEMP_RPPI_MERGE = UNEMP_MERGE.merge(RPPI_SORTED_IND, on="Month", how="outer")
+UNEMP_RPPI_MERGE1 = UNEMP_MERGE.merge(RPPI_SORTED_IND, on="Month", how="outer")
+UNEMP_RPPI_MERGE = UNEMP_RPPI_MERGE1.merge(RPPI2_SORTED_IND, on="Month", how="outer")
 print(UNEMP_RPPI_MERGE.shape)
 print(UNEMP_RPPI_MERGE.columns)
 
 #removing unwanted dates and columns
 UNEMP_RPPI_MERGE_CLEAN = UNEMP_RPPI_MERGE.loc["2015":"2022"]
 print(UNEMP_RPPI_MERGE_CLEAN.shape)
-UNEMP_RPPI_MERGE_CLEAN2 = UNEMP_RPPI_MERGE_CLEAN.drop(columns = ['Age Group_x','Sex_x','UNIT_x','Statistic_y', 'Age Group_y', 'Sex_y','UNIT_y','UNIT'])
+print(UNEMP_RPPI_MERGE_CLEAN.columns)
+UNEMP_RPPI_MERGE_CLEAN2 = UNEMP_RPPI_MERGE_CLEAN.drop(columns = ['Age Group_x','Sex_x','UNIT_x','Statistic_y', 'Age Group_y', 'Sex_y','UNIT_y','UNIT','UNIT2','Type of Residential Property2'])
 print(UNEMP_RPPI_MERGE_CLEAN2.shape)
 print(UNEMP_RPPI_MERGE_CLEAN2.columns)
 print(UNEMP_RPPI_MERGE_CLEAN2.head())
@@ -106,7 +127,7 @@ print(sensitivityUMEMPdf)
 UNEMP_RPPI_MERGE_CLEAN2['UNEMP_MVMT']=UNEMP_RPPI_MERGE_CLEAN2['UNEMP Rate to use'].diff()
 print(UNEMP_RPPI_MERGE_CLEAN2.tail())
 
-#create a function to multiply main dataframe by sensitivities
+#multiply main dataframe by sensitivities
 RPPI_1 = 5.8
 UMEMP_1 = 1.5
 print(RPPI_1)
@@ -126,4 +147,23 @@ UNEMP_RPPI_MERGE_CLEAN2['TOTAL_PL'] = UNEMP_RPPI_MERGE_CLEAN2['UNEMP_PL'] + UNEM
 
 print(UNEMP_RPPI_MERGE_CLEAN2.tail())
 print(UNEMP_RPPI_MERGE_CLEAN2.columns)
+UNEMP_RPPI_MERGE_CLEAN2.columns = ['Statistic_x', 'Unemployment', 'Lower and Upper Bound', 'C19_Unemployment',
+       'Statistic', 'Type of Residential Property', 'RPPI MVMT', 'Statistic2',
+       'RPPI_INDEX', 'UNEMPLOYMENT RATE', 'UNEMP_MVMT', 'RPPI_1', 'UMEMP_1',
+       'RPPI_PL', 'UNEMP_PL', 'TOTAL_PL']
 
+#create scatter graph of umemployment and Property prices
+import matplotlib.pyplot as plt
+import seaborn as sns
+sns.set_theme(style="white")
+
+# Load  dataset
+data = UNEMP_RPPI_MERGE_CLEAN2
+
+# Plot unemployment against house prices with other semantics
+sns.relplot(x="Unemployment", y="RPPI_INDEX",
+
+            sizes=(40, 400), alpha=.5, palette="muted",
+
+            height=6, data=data)
+plt.show()
