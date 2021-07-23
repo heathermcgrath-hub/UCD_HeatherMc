@@ -152,6 +152,9 @@ UNEMP_RPPI_MERGE_CLEAN2.columns = ['Statistic_x', 'Unemployment', 'Lower and Upp
        'RPPI_INDEX', 'UNEMPLOYMENT RATE', 'UNEMP_MVMT', 'RPPI_1', 'UMEMP_1',
        'RPPI_PL', 'UNEMP_PL', 'TOTAL_PL']
 
+UNEMP_RPPI_MERGE_CLEAN2['C19_FLAG']=np.where(UNEMP_RPPI_MERGE_CLEAN2['C19_Unemployment'] > 0,'C19','Pre_C19')
+print(UNEMP_RPPI_MERGE_CLEAN2.columns)
+
 #create scatter graph of umemployment and Property prices
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -161,9 +164,93 @@ sns.set_theme(style="white")
 data = UNEMP_RPPI_MERGE_CLEAN2
 
 # Plot unemployment against house prices with other semantics
-sns.relplot(x="Unemployment", y="RPPI_INDEX",
+sns.relplot(x="RPPI_INDEX", y="Unemployment", hue="C19_FLAG",
 
             sizes=(40, 400), alpha=.5, palette="muted",
 
             height=6, data=data)
+#plt.show()
+
+data2 = UNEMP_RPPI_MERGE_CLEAN2.loc["2019M04":"2021M04"]
+data3 = data2.reset_index()
+print(data3.columns)
+print(data3.tail())
+m_array = data3["Month"].to_numpy()
+r_array = data3["RPPI MVMT"].to_numpy()
+u_array = data3["UNEMP_MVMT"].to_numpy()
+print(m_array)
+
+
+#insert line graph with two Y axis
+
+
+fig, ax1 = plt.subplots()
+
+color = 'tab:red'
+
+ax1.set_xlabel('Month')
+
+ax1.set_ylabel('RPPI MVMT', color=color)
+
+ax1.plot(m_array,r_array, color=color)
+
+ax1.tick_params(axis='y', labelcolor=color)
+ax1.set_ylim(-5, 15)
+ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
+
+color = 'tab:blue'
+
+ax2.set_ylabel('UNEMP_MVMT', color=color)  # we already handled the x-label with ax1
+
+ax2.plot(m_array, u_array, color=color)
+
+ax2.tick_params(axis='y', labelcolor=color)
+
+fig.tight_layout()  # otherwise the right y-label is slightly clipped
+
+
+
+plt.setp(ax1.get_xticklabels(), rotation=45)
+#plt.show()
+
+#create a bar chart showing P&L impact per month due to macro econimic movements during C19
+
+# Set the figure size
+plt.figure(figsize=(14, 10))
+
+# plot a bar chart
+ax2 = sns.barplot(
+    y="TOTAL_PL",
+    x="Month",
+    data=data3,
+    estimator=sum,
+    ci=None,
+    color='#69b3a2')
+plt.setp(ax2.get_xticklabels(), rotation=90)
+ax2.set_ylim(-0.10, 0.25)
+plt.show()
+
+
+# plot a bar chart RPPI only
+ax3 = sns.barplot(
+    y="RPPI_PL",
+    x="Month",
+    data=data3,
+    estimator=sum,
+    ci=None,
+    color='orange')
+plt.setp(ax3.get_xticklabels(), rotation=90)
+ax3.set_ylim(-0.10, 0.25)
+plt.show()
+
+# plot a bar chart UNEMP only
+ax4 = sns.barplot(
+    y="UNEMP_PL",
+    x="Month",
+    data=data3,
+    estimator=sum,
+    ci=None,
+    color="purple")
+plt.setp(ax4.get_xticklabels(), rotation=90)
+ax4.set_ylim(-0.10, 0.25)
 plt.show()
