@@ -258,6 +258,7 @@ ax3.set_ylim(-0.10, 0.25)
 plt.show()
 
 f4, ax4a = plt.subplots(figsize=(4, 3), dpi=100)
+
 # plot a bar chart UNEMP only
 ax4 = sns.barplot(
     y="UNEMP_PL",
@@ -280,20 +281,18 @@ parsed_data5 = pd.read_json('/Users/macbookpro/PycharmProjects/UCD_HeatherMc/RPP
 RPPI_API_Data = parsed_data5.to_csv('/Users/macbookpro/PycharmProjects/UCD_HeatherMc/RPPI_API.csv')
 RPPI_API_Data_df = pd.read_csv('RPPI_API.csv')
 
-# Reusable code
-
-#start_date =
-#end_date =
-#column_name =
+# Reusable code to get cumulative sum of RPPI UNEMP AND TOTAL P&L
 
 
-#data5 = UNEMP_RPPI_MERGE_CLEAN2.loc["2020M03":"2021M04"]
-#print(data5)
-
-#def Cumulative_Sum(column_name, start_date, end_date):
-    #datax=data.loc[start:end]
-    #print(datax)
-
-#Cumulative_Sum(UNEMP_RPPI_MERGE_CLEAN2,"2020M03","2021M04")
+def cumulativesum(columnname, start, end):
+    df = UNEMP_RPPI_MERGE_CLEAN2[columnname].loc[start:end].cumsum(axis=0)
+    print(df.tail(1))
 
 
+cumulativesum('RPPI_PL', "2020M03", "2021M04")
+
+
+cumulativesum('UNEMP_PL', "2020M03", "2021M04")
+
+
+cumulativesum('TOTAL_PL', "2020M03", "2021M04")
