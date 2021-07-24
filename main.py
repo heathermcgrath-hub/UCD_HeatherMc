@@ -279,3 +279,21 @@ with open("RPPI_API.txt", "w") as outfile:
 parsed_data5 = pd.read_json('/Users/macbookpro/PycharmProjects/UCD_HeatherMc/RPPI_API.txt')
 RPPI_API_Data = parsed_data5.to_csv('/Users/macbookpro/PycharmProjects/UCD_HeatherMc/RPPI_API.csv')
 RPPI_API_Data_df = pd.read_csv('RPPI_API.csv')
+
+# Reusable code
+
+#start_date =
+#end_date =
+#column_name =
+
+
+#data5 = UNEMP_RPPI_MERGE_CLEAN2.loc["2020M03":"2021M04"]
+#print(data5)
+
+#def Cumulative_Sum(column_name, start_date, end_date):
+    #datax=data.loc[start:end]
+    #print(datax)
+
+#Cumulative_Sum(UNEMP_RPPI_MERGE_CLEAN2,"2020M03","2021M04")
+
+
