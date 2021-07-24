@@ -169,7 +169,7 @@ sns.relplot(x="RPPI_INDEX", y="Unemployment", hue="C19_FLAG",
             sizes=(40, 400), alpha=.5, palette="muted",
 
             height=6, data=data)
-#plt.show()
+Iplt.show()
 
 data2 = UNEMP_RPPI_MERGE_CLEAN2.loc["2019M04":"2021M04"]
 data3 = data2.reset_index()
@@ -211,7 +211,7 @@ fig.tight_layout()  # otherwise the right y-label is slightly clipped
 
 
 plt.setp(ax1.get_xticklabels(), rotation=45)
-#plt.show()
+plt.show()
 
 #create a bar chart showing P&L impact per month due to macro econimic movements during C19
 f2, ax2a = plt.subplots(figsize=(4, 3),dpi=100)
@@ -253,4 +253,15 @@ plt.setp(ax4.get_xticklabels(), rotation=90)
 ax4.set_ylim(-0.10, 0.25)
 plt.show()
 
-#API info - What are the latest HPI and UNEMPLOYMENT Rates
+#API - Import Latest RPPI Dataset convert to CSV
+import requests
+import json
+data4 = requests.get("https://ws.cso.ie/public/api.jsonrpc?data=%7B%22jsonrpc%22:%222.0%22,%22method%22:%22PxStat.Data.Cube_API.ReadDataset%22,%22params%22:%7B%22class%22:%22query%22,%22id%22:%5B%5D,%22dimension%22:%7B%7D,%22extension%22:%7B%22pivot%22:null,%22codes%22:false,%22language%22:%7B%22code%22:%22en%22%7D,%22format%22:%7B%22type%22:%22JSON-stat%22,%22version%22:%222.0%22%7D,%22matrix%22:%22HPM09%22%7D,%22version%22:%222.0%22%7D%7D")
+parsed_data4 = data4.json()
+with open("RPPI_API.txt","w") as outfile:
+    json.dump(parsed_data4,outfile)
+parsed_data5 = pd.read_json('/Users/macbookpro/PycharmProjects/UCD_HeatherMc/RPPI_API.txt')
+RPPI_API_Data = parsed_data5.to_csv('/Users/macbookpro/PycharmProjects/UCD_HeatherMc/RPPI_API.csv')
+RPPI_API_Data_df = pd.read_csv('RPPI_API.csv')
+
+
