@@ -169,7 +169,7 @@ sns.relplot(x="RPPI_INDEX", y="Unemployment", hue="C19_FLAG",
             sizes=(40, 400), alpha=.5, palette="muted",
 
             height=6, data=data)
-Iplt.show()
+plt.show()
 
 data2 = UNEMP_RPPI_MERGE_CLEAN2.loc["2019M04":"2021M04"]
 data3 = data2.reset_index()
