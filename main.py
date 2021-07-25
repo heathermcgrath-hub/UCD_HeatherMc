@@ -282,7 +282,7 @@ ax4 = sns.barplot(
     color="purple")
 plt.setp(ax4.get_xticklabels(), rotation=90)
 ax4.set_ylim(-0.25, 0.20)
-ax4.set(title="Total Monthly Unemployment P&L Movement")
+ax4.set(title="Total Monthly UNEMP P&L Movement")
 plt.show()
 
 # Reusable code to get cumulative sum of RPPI UNEMP AND TOTAL P&L
