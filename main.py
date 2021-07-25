@@ -164,7 +164,7 @@ print(UNEMP_RPPI_MERGE_CLEAN2.columns)
 # Calculate P&L impact of RPPI and UNEMP movements monthly
 
 UNEMP_RPPI_MERGE_CLEAN2['RPPI_PL'] = (UNEMP_RPPI_MERGE_CLEAN2['RPPI_1'] * UNEMP_RPPI_MERGE_CLEAN2['VALUE'])/100
-UNEMP_RPPI_MERGE_CLEAN2['UNEMP_PL'] = (UNEMP_RPPI_MERGE_CLEAN2['UMEMP_1'] * UNEMP_RPPI_MERGE_CLEAN2['UNEMP_MVMT'])/100
+UNEMP_RPPI_MERGE_CLEAN2['UNEMP_PL'] = (UNEMP_RPPI_MERGE_CLEAN2['UMEMP_1'] * UNEMP_RPPI_MERGE_CLEAN2['UNEMP_MVMT'])/100 * -1
 UNEMP_RPPI_MERGE_CLEAN2['TOTAL_PL'] = UNEMP_RPPI_MERGE_CLEAN2['UNEMP_PL'] + UNEMP_RPPI_MERGE_CLEAN2['RPPI_PL']
 
 print(UNEMP_RPPI_MERGE_CLEAN2.tail())
@@ -204,7 +204,8 @@ print(data3.tail())
 m_array = data3["Month"].to_numpy()
 r_array = data3["RPPI MVMT"].to_numpy()
 u_array = data3["UNEMP_MVMT"].to_numpy()
-print(m_array)
+print(u_array)
+print(r_array)
 
 
 # insert line graph with two Y axis
@@ -251,7 +252,7 @@ ax2 = sns.barplot(
     ci=None,
     color='#69b3a2')
 plt.setp(ax2.get_xticklabels(), rotation=90)
-ax2.set_ylim(-0.10, 0.25)
+ax2.set_ylim(-0.25, 0.20)
 ax2.set(title="Total Monthly Macro P&L Movement")
 plt.show()
 
@@ -265,7 +266,7 @@ ax3 = sns.barplot(
     ci=None,
     color='orange')
 plt.setp(ax3.get_xticklabels(), rotation=90)
-ax3.set_ylim(-0.10, 0.25)
+ax3.set_ylim(-0.25, 0.20)
 ax3.set(title="Total Monthly RPPI P&L Movement")
 plt.show()
 
@@ -280,7 +281,7 @@ ax4 = sns.barplot(
     ci=None,
     color="purple")
 plt.setp(ax4.get_xticklabels(), rotation=90)
-ax4.set_ylim(-0.10, 0.25)
+ax4.set_ylim(-0.25, 0.20)
 ax3.set(title="Total Monthly Unemployment P&L Movement")
 plt.show()
 
