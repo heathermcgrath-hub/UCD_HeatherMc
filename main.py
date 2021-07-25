@@ -6,6 +6,8 @@ import seaborn as sns
 import requests
 import json
 
+# Import data and review
+
 RPPI = pd.read_csv("Residential Property Price Index.csv")
 RPPI2 = pd.read_csv("RPPI2.csv")
 UNEMP = pd.read_csv("Seasonally Adjusted Monthly Unemployment.csv")
@@ -167,10 +169,15 @@ UNEMP_RPPI_MERGE_CLEAN2['TOTAL_PL'] = UNEMP_RPPI_MERGE_CLEAN2['UNEMP_PL'] + UNEM
 
 print(UNEMP_RPPI_MERGE_CLEAN2.tail())
 print(UNEMP_RPPI_MERGE_CLEAN2.columns)
+
+# Columns were renamed to make analysis easier
+
 UNEMP_RPPI_MERGE_CLEAN2.columns = ['Statistic_x', 'Unemployment', 'Lower and Upper Bound', 'C19_Unemployment',
                                    'Statistic', 'Type of Residential Property', 'RPPI MVMT', 'Statistic2',
                                    'RPPI_INDEX', 'UNEMPLOYMENT RATE', 'UNEMP_MVMT', 'RPPI_1', 'UMEMP_1',
                                    'RPPI_PL', 'UNEMP_PL', 'TOTAL_PL']
+
+# C19_FLAG created to identify pre and post C19 dates
 
 UNEMP_RPPI_MERGE_CLEAN2['C19_FLAG'] = np.where(UNEMP_RPPI_MERGE_CLEAN2['C19_Unemployment'] > 0, 'C19', 'Pre_C19')
 print(UNEMP_RPPI_MERGE_CLEAN2.columns)
@@ -187,7 +194,7 @@ sns.relplot(x="RPPI_INDEX", y="Unemployment", hue="C19_FLAG",
 
             sizes=(40, 400), alpha=.5, palette="muted",
 
-            height=6, data=data)
+            height=6, data=data).set(title="Macro Correlation RPPI vs UNEMPLOYMENT")
 plt.show()
 
 data2 = UNEMP_RPPI_MERGE_CLEAN2.loc["2019M04":"2021M04"]
@@ -225,9 +232,12 @@ ax2.plot(m_array, u_array, color=color)
 
 ax2.tick_params(axis='y', labelcolor=color)
 
+ax2.set(title="Macro Monthly Movement Comparison")
+
 fig.tight_layout()  # otherwise the right y-label is slightly clipped
 
 plt.setp(ax1.get_xticklabels(), rotation=45)
+
 plt.show()
 
 # create a bar chart showing P&L impact per month due to macro economic movements during C19
@@ -242,6 +252,7 @@ ax2 = sns.barplot(
     color='#69b3a2')
 plt.setp(ax2.get_xticklabels(), rotation=90)
 ax2.set_ylim(-0.10, 0.25)
+ax2.set(title="Total Monthly Macro P&L Movement")
 plt.show()
 
 f3, ax3a = plt.subplots(figsize=(4, 3), dpi=100)
@@ -255,6 +266,7 @@ ax3 = sns.barplot(
     color='orange')
 plt.setp(ax3.get_xticklabels(), rotation=90)
 ax3.set_ylim(-0.10, 0.25)
+ax3.set(title="Total Monthly RPPI P&L Movement")
 plt.show()
 
 f4, ax4a = plt.subplots(figsize=(4, 3), dpi=100)
@@ -269,17 +281,8 @@ ax4 = sns.barplot(
     color="purple")
 plt.setp(ax4.get_xticklabels(), rotation=90)
 ax4.set_ylim(-0.10, 0.25)
+ax3.set(title="Total Monthly Unemployment P&L Movement")
 plt.show()
-
-# API - Import Latest RPPI Dataset convert to CSV
-
-data4 = requests.get("https://ws.cso.ie/public/api.jsonrpc?data=%7B%22jsonrpc%22:%222.0%22,%22method%22:%22PxStat.Data.Cube_API.ReadDataset%22,%22params%22:%7B%22class%22:%22query%22,%22id%22:%5B%5D,%22dimension%22:%7B%7D,%22extension%22:%7B%22pivot%22:null,%22codes%22:false,%22language%22:%7B%22code%22:%22en%22%7D,%22format%22:%7B%22type%22:%22JSON-stat%22,%22version%22:%222.0%22%7D,%22matrix%22:%22HPM09%22%7D,%22version%22:%222.0%22%7D%7D")
-parsed_data4 = data4.json()
-with open("RPPI_API.txt", "w") as outfile:
-    json.dump(parsed_data4, outfile)
-parsed_data5 = pd.read_json('/Users/macbookpro/PycharmProjects/UCD_HeatherMc/RPPI_API.txt')
-RPPI_API_Data = parsed_data5.to_csv('/Users/macbookpro/PycharmProjects/UCD_HeatherMc/RPPI_API.csv')
-RPPI_API_Data_df = pd.read_csv('RPPI_API.csv')
 
 # Reusable code to get cumulative sum of RPPI UNEMP AND TOTAL P&L
 
@@ -296,3 +299,13 @@ cumulativesum('UNEMP_PL', "2020M03", "2021M04")
 
 
 cumulativesum('TOTAL_PL', "2020M03", "2021M04")
+
+# API - Import Latest RPPI Dataset convert to CSV
+
+data4 = requests.get("https://ws.cso.ie/public/api.jsonrpc?data=%7B%22jsonrpc%22:%222.0%22,%22method%22:%22PxStat.Data.Cube_API.ReadDataset%22,%22params%22:%7B%22class%22:%22query%22,%22id%22:%5B%5D,%22dimension%22:%7B%7D,%22extension%22:%7B%22pivot%22:null,%22codes%22:false,%22language%22:%7B%22code%22:%22en%22%7D,%22format%22:%7B%22type%22:%22JSON-stat%22,%22version%22:%222.0%22%7D,%22matrix%22:%22HPM09%22%7D,%22version%22:%222.0%22%7D%7D")
+parsed_data4 = data4.json()
+with open("RPPI_API.txt", "w") as outfile:
+    json.dump(parsed_data4, outfile)
+parsed_data5 = pd.read_json('/Users/macbookpro/PycharmProjects/UCD_HeatherMc/RPPI_API.txt')
+RPPI_API_Data = parsed_data5.to_csv('/Users/macbookpro/PycharmProjects/UCD_HeatherMc/RPPI_API.csv')
+RPPI_API_Data_df = pd.read_csv('RPPI_API.csv')
